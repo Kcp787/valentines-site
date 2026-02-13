@@ -38,7 +38,8 @@
     border: none;
     border-radius: 15px;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s, top 0.2s, left 0.2s;
+    position: relative;
   }
 
   button:hover {
@@ -75,15 +76,21 @@
 </head>
 <body>
 <div id="container">
-  <h1>Will you be my Valentine? 💌</h1>
-  <button id="yes">Yes ❤️</button>
+  <h1>Will you be my Valentine, Putu from Bali? 💌</h1>
+  <button id="yes" disabled>Yes ❤️</button>
   <button id="no">No 😢</button>
   <div id="message"></div>
 </div>
 
+<audio id="booSound" src="https://www.soundjay.com/human/boo-1.mp3"></audio>
+
 <script>
 const message = document.getElementById('message');
+const yesButton = document.getElementById('yes');
+const noButton = document.getElementById('no');
+const booSound = document.getElementById('booSound');
 
+// Floating hearts function
 function createHeart() {
   const heart = document.createElement('div');
   heart.className = 'heart';
@@ -95,14 +102,35 @@ function createHeart() {
   setTimeout(() => heart.remove(), 4000);
 }
 
-document.getElementById('yes').onclick = () => {
-  message.textContent = "Yay! 💕 I’m so happy you said yes!";
-  // Confetti hearts
+// Enable "Yes" after 5 seconds
+setTimeout(() => {
+  yesButton.disabled = false;
+  yesButton.textContent = 'Yes ❤️';
+}, 5000);
+
+// Move the "Yes" button randomly if hovered
+yesButton.addEventListener('mouseenter', () => {
+  if (yesButton.disabled) return;
+  const maxX = window.innerWidth - yesButton.offsetWidth;
+  const maxY = window.innerHeight - yesButton.offsetHeight;
+  const randomX = Math.random() * maxX;
+  const randomY = Math.random() * maxY;
+  yesButton.style.position = 'absolute';
+  yesButton.style.left = randomX + 'px';
+  yesButton.style.top = randomY + 'px';
+});
+
+// Clicking "Yes" shows message + hearts
+yesButton.onclick = () => {
+  message.textContent = "Yay! 💕 I’m so happy you said yes, Putu!";
   for(let i=0; i<30; i++) setTimeout(createHeart, i*100);
 };
 
-document.getElementById('no').onclick = () => {
-  message.textContent = "Oh no 😢 Maybe try again?";
+// Clicking "No" plays boo sound + sad emojis
+noButton.onclick = () => {
+  booSound.play();
+  message.textContent = "Oh no 😢 Don't be sad, Putu!";
+  for(let i=0; i<5; i++) setTimeout(createHeart, i*200);
 };
 </script>
 </body>
