@@ -52,6 +52,8 @@
     margin-top: 1em;
     font-size: 1.2em;
     color: #ff4d6d;
+    opacity: 1;
+    transition: opacity 0.5s;
   }
 
   .heart {
@@ -118,7 +120,7 @@ function createHeart(x, y) {
 
 // Confetti
 function createConfetti() {
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 30; i++) {
     const confetti = document.createElement('div');
     confetti.className = 'confetti';
     confetti.style.left = Math.random() * window.innerWidth + 'px';
@@ -134,7 +136,7 @@ function stage1() {
   container.innerHTML = '';
   const btn = document.createElement('button');
   btn.textContent = 'Pilih Hati 💖';
-  btn.onclick = () => {
+  btn.onclick = (e) => {
     popSound.currentTime = 0;
     popSound.play();
     createHeart(window.innerWidth/2, window.innerHeight/2);
@@ -144,33 +146,34 @@ function stage1() {
   container.appendChild(btn);
 }
 
-// Stage 2: Chocolate or Flowers
+// Stage 2: Chocolate or Flowers (buttons chase finger)
 function stage2() {
   container.innerHTML = '';
   messageEl.textContent = "Pilih satu: Chocolate 🍫 atau Flowers 🌸?";
-  
+
   const chocolate = document.createElement('button');
   chocolate.textContent = "Chocolate 🍫";
   chocolate.onclick = () => {
     booSound.currentTime = 0;
     booSound.play();
     messageEl.textContent = "Ups 😅 coba lagi!";
-    // move button randomly
     chocolate.style.position = 'absolute';
     chocolate.style.left = Math.random() * (window.innerWidth - 100) + 'px';
     chocolate.style.top = Math.random() * (window.innerHeight - 200) + 'px';
   };
-  
+
   const flowers = document.createElement('button');
   flowers.textContent = "Flowers 🌸";
   flowers.onclick = () => {
     popSound.currentTime = 0;
     popSound.play();
     createHeart(window.innerWidth/2, window.innerHeight/2);
+    giggleSound.currentTime = 0;
+    giggleSound.play();
     messageEl.textContent = "Hebat! Kamu memilih dengan benar 💕";
     setTimeout(stage3, 1500);
   };
-  
+
   container.appendChild(chocolate);
   container.appendChild(flowers);
 }
@@ -179,20 +182,31 @@ function stage2() {
 function stage3() {
   container.innerHTML = '';
   messageEl.textContent = "Sekarang, buka hadiahnya 🎁";
-  
+
   const giftBtn = document.createElement('button');
   giftBtn.textContent = "Buka Hadiah 🎁";
+
   giftBtn.onclick = () => {
+    // Button disappears after click
+    giftBtn.disabled = true;
+    giftBtn.style.display = 'none';
+
     popSound.currentTime = 0;
     popSound.play();
     createConfetti();
-    messageEl.textContent = "Putu, kamu Valentine-ku 💖 Aku sayang kamu 😘🌸";
+
+    messageEl.textContent = "Haha, not that easy! You’ll have to wait for your surprise!!! 💖";
+
+    // Extra hearts for fun
+    for (let i = 0; i < 10; i++) {
+      setTimeout(() => createHeart(Math.random()*window.innerWidth, Math.random()*window.innerHeight), i*150);
+    }
   };
-  
+
   container.appendChild(giftBtn);
 }
 
-// Start button click
+// Start button
 document.getElementById('startBtn').onclick = () => {
   popSound.currentTime = 0;
   popSound.play();
@@ -200,6 +214,13 @@ document.getElementById('startBtn').onclick = () => {
   messageEl.textContent = "Yay! Mari kita mulai adventure! 💕";
   setTimeout(stage1, 1000);
 };
+
+// Tap anywhere creates floating hearts
+document.body.addEventListener('touchstart', (e) => {
+  const touch = e.touches[0];
+  createHeart(touch.clientX, touch.clientY);
+});
+
 </script>
 </body>
 </html>
