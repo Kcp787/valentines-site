@@ -189,7 +189,7 @@ function stage1(){
 
 // Stage 2: Cringe joke
 function stage2(){
-  stageText.innerHTML="<p>Did you know... if I could re-arrange the alphabet I’d put U and I together 😆 (eww)</p>";
+  stageText.innerHTML="<p>Did you know... if I could rearrange the alphabet I’d put U and I together 😆 (lol)</p>";
   stageButtons.innerHTML="";
   createConfetti();
   setTimeout(()=>{
@@ -245,24 +245,35 @@ function stage4(){
 function stage5(){
   stageText.innerHTML="<p>Now, open the gift 🎁</p>";
   stageButtons.innerHTML="";
-  const giftBtn=document.createElement('button');
-  giftBtn.textContent="Open Gift 🎁";
-  giftBtn.onclick=()=>{
-    giftBtn.disabled=true;
-    giftBtn.style.display='none';
-    showModal("Haha, not that easy! You’ll have to wait for your surprise!!! 💖",5000,()=>{
-      const clickHere=document.createElement('button');
-      clickHere.textContent="Click here ➡️";
-      clickHere.onclick=stage6;
-      stageButtons.appendChild(clickHere);
+  
+  const giftBtn = document.createElement('button');
+  giftBtn.textContent = "Open Gift 🎁";
+  
+  giftBtn.onclick = () => {
+    giftBtn.disabled = true;
+    giftBtn.style.display = 'none';
+
+    // Show "Haha not that easy" modal for 5s
+    showModal("Haha, not that easy! You’ll have to wait for your surprise!!! 💖", 5000, () => {
+      
+      // After modal closes, remove old text and button, add new "Last one... promise 😘" button
+      stageText.innerHTML = "";  // Remove "Now, open the gift" text
+      stageButtons.innerHTML = ""; // Remove old button
+      
+      const lastBtn = document.createElement('button');
+      lastBtn.textContent = "Last one… promise 😘";
+      lastBtn.onclick = stage6;  // Goes to final message
+      stageButtons.appendChild(lastBtn);
     });
   };
+
   stageButtons.appendChild(giftBtn);
 }
 
+
 // Stage 6: Final message
 function stage6(){
-  stageText.innerHTML="<p>Happy Valentine’s Day baby 💖<br>This was just a bit of fun, wish I was there to spend the day with you. Can't wait to see you in a few weeks, pick you up and give you a big cuddle and kiss. Hope you have a good day, speak to you later. Love you, Kieran 💖</p>";
+  stageText.innerHTML="<p>Happy Valentine’s Day baby 💖<br>This was just a bit of fun, wish I was there to spend the day with you. Can't wait to see each other in a few weeks, pick you up and give you a big cuddle and kiss. Hope you have a good day, speak to you later. Love you, Kieran 💖</p>";
   stageButtons.innerHTML="";
 }
 
