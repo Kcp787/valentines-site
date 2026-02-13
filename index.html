@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentine Treasure Hunt for Putu 💖</title>
+<title>Valentine Adventure for Putu 💖</title>
 <style>
   body {
     margin: 0;
@@ -50,7 +50,7 @@
 
   #message {
     margin-top: 1em;
-    font-size: 1.2em;
+    font-size: 1.3em;
     color: #ff4d6d;
     opacity: 1;
     transition: opacity 0.5s;
@@ -82,14 +82,15 @@
     0% { transform: translateY(0) rotate(0deg); opacity: 1; }
     100% { transform: translateY(300px) rotate(360deg); opacity: 0; }
   }
+
 </style>
 </head>
 <body>
 
 <div id="container">
-  <h1>Selamat pagi, Putu! 💖</h1>
+  <h1>Good morning, baby! 🌞💖</h1>
   <div id="stageContent">
-    <button id="startBtn">Mulai Adventure 🎉</button>
+    <button id="startBtn">Start the adventure 🚀</button>
   </div>
   <div id="message"></div>
 </div>
@@ -131,35 +132,73 @@ function createConfetti() {
   }
 }
 
-// Stage 1: Pick a heart
+// Stage 1: Secret question
 function stage1() {
   container.innerHTML = '';
-  const btn = document.createElement('button');
-  btn.textContent = 'Pilih Hati 💖';
-  btn.onclick = (e) => {
-    popSound.currentTime = 0;
-    popSound.play();
-    createHeart(window.innerWidth/2, window.innerHeight/2);
-    messageEl.textContent = "Kamu luar biasa, Putu! 😘";
+  messageEl.textContent = "First, do you want to know a secret?";
+
+  const yesBtn = document.createElement('button');
+  yesBtn.textContent = "✅ Yes";
+  yesBtn.onclick = stage2;
+
+  const noBtn = document.createElement('button');
+  noBtn.textContent = "❌ No";
+  noBtn.onclick = () => {
+    booSound.currentTime = 0;
+    booSound.play();
+    messageEl.textContent = "Tough 😏 you have no choice!";
     setTimeout(stage2, 1500);
   };
-  container.appendChild(btn);
+
+  container.appendChild(yesBtn);
+  container.appendChild(noBtn);
 }
 
-// Stage 2: Chocolate or Flowers (buttons chase finger)
+// Stage 2: Cringe joke
 function stage2() {
   container.innerHTML = '';
-  messageEl.textContent = "Pilih satu: Chocolate 🍫 atau Flowers 🌸?";
+  messageEl.textContent = "Did you know... if I could re-arrange the alphabet I’d put U and I together 😆 (eww)";
+  
+  const nextBtn = document.createElement('button');
+  nextBtn.textContent = "Next ➡️";
+  nextBtn.onclick = stage3;
+  container.appendChild(nextBtn);
+}
+
+// Stage 3: What do you love best about her
+function stage3() {
+  container.innerHTML = '';
+  messageEl.textContent = "What do you think I love best about you?";
+
+  const options = ["Your smile", "Your singing", "You hogging the bed"];
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.textContent = opt;
+    btn.onclick = () => {
+      popSound.currentTime = 0;
+      popSound.play();
+      createHeart(window.innerWidth/2, window.innerHeight/2);
+      messageEl.textContent = "All of them! 💕";
+      const nextBtn = document.createElement('button');
+      nextBtn.textContent = "Next ➡️";
+      nextBtn.onclick = stage4;
+      container.appendChild(nextBtn);
+    };
+    container.appendChild(btn);
+  });
+}
+
+// Stage 4: Flowers or Chocolate
+function stage4() {
+  container.innerHTML = '';
+  messageEl.textContent = "Final one: which would you choose?";
 
   const chocolate = document.createElement('button');
   chocolate.textContent = "Chocolate 🍫";
   chocolate.onclick = () => {
     booSound.currentTime = 0;
     booSound.play();
-    messageEl.textContent = "Ups 😅 coba lagi!";
-    chocolate.style.position = 'absolute';
-    chocolate.style.left = Math.random() * (window.innerWidth - 100) + 'px';
-    chocolate.style.top = Math.random() * (window.innerHeight - 200) + 'px';
+    messageEl.textContent = "Oops 😅";
   };
 
   const flowers = document.createElement('button');
@@ -168,59 +207,51 @@ function stage2() {
     popSound.currentTime = 0;
     popSound.play();
     createHeart(window.innerWidth/2, window.innerHeight/2);
-    giggleSound.currentTime = 0;
-    giggleSound.play();
-    messageEl.textContent = "Hebat! Kamu memilih dengan benar 💕";
-    setTimeout(stage3, 1500);
+    messageEl.textContent = "Yay! 💖";
   };
 
   container.appendChild(chocolate);
   container.appendChild(flowers);
-}
-
-// Stage 3: Open gift
-function stage3() {
-  container.innerHTML = '';
-  messageEl.textContent = "Sekarang, buka hadiahnya 🎁";
 
   const giftBtn = document.createElement('button');
-  giftBtn.textContent = "Buka Hadiah 🎁";
-
-  giftBtn.onclick = () => {
-    // Button disappears after click
-    giftBtn.disabled = true;
-    giftBtn.style.display = 'none';
-
-    popSound.currentTime = 0;
-    popSound.play();
-    createConfetti();
-
-    messageEl.textContent = "Haha, not that easy! You’ll have to wait for your surprise!!! 💖";
-
-    // Extra hearts for fun
-    for (let i = 0; i < 10; i++) {
-      setTimeout(() => createHeart(Math.random()*window.innerWidth, Math.random()*window.innerHeight), i*150);
-    }
-  };
-
+  giftBtn.textContent = "Open Gift 🎁";
+  giftBtn.onclick = () => stage5(giftBtn);
   container.appendChild(giftBtn);
 }
 
-// Start button
+// Stage 5: Gift page
+function stage5(btn) {
+  btn.disabled = true;
+  btn.style.display = 'none';
+  createConfetti();
+  messageEl.textContent = "Haha, not that easy! You’ll have to wait for your surprise!!! 💖";
+
+  const clickHereBtn = document.createElement('button');
+  clickHereBtn.textContent = "Click here ➡️";
+  clickHereBtn.onclick = stage6;
+  container.appendChild(clickHereBtn);
+}
+
+// Stage 6: Final love message
+function stage6() {
+  container.innerHTML = '';
+  messageEl.textContent = "Happy Valentine’s Day baby 💖\nThis was just a bit of fun, wish I was there to spend the day with you. Can't wait to see you in a few weeks, pick you up and give you a big cuddle and kiss. Hope you have a good day, speak to you later. Love you, Kieran 💖";
+}
+
+// Start adventure
 document.getElementById('startBtn').onclick = () => {
   popSound.currentTime = 0;
   popSound.play();
   createHeart(window.innerWidth/2, window.innerHeight/2);
-  messageEl.textContent = "Yay! Mari kita mulai adventure! 💕";
+  messageEl.textContent = "Yay! Let’s start the adventure 💕";
   setTimeout(stage1, 1000);
 };
 
-// Tap anywhere creates floating hearts
+// Floating hearts on any tap
 document.body.addEventListener('touchstart', (e) => {
   const touch = e.touches[0];
   createHeart(touch.clientX, touch.clientY);
 });
-
 </script>
 </body>
 </html>
