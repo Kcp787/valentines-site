@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Be My Valentine?</title>
+<title>Untuk Putu 💖</title>
 <style>
   body {
     margin: 0;
@@ -15,55 +15,24 @@
     height: 100vh;
     overflow: hidden;
     position: relative;
-  }
-
-  #container {
-    text-align: center;
-    background: rgba(255,255,255,0.9);
-    padding: 2em;
-    border-radius: 20px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-  }
-
-  h1 {
-    font-size: 2em;
-    color: #ff4d6d;
-    margin-bottom: 1em;
-  }
-
-  button {
-    padding: 1em 2em;
-    margin: 0.5em;
-    font-size: 1.2em;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: transform 0.2s, top 0.2s, left 0.2s;
-    position: relative;
-  }
-
-  button:hover {
-    transform: scale(1.1);
-  }
-
-  #yes {
-    background-color: #ff4d6d;
-    color: white;
-  }
-
-  #no {
-    background-color: #ccc;
+    touch-action: manipulation;
   }
 
   #message {
-    margin-top: 1em;
+    position: fixed;
+    top: 10%;
+    width: 100%;
+    text-align: center;
     font-size: 1.5em;
     color: #ff4d6d;
+    z-index: 1000;
+    text-shadow: 1px 1px 2px #fff;
+    pointer-events: none;
   }
 
   .heart {
     position: absolute;
-    font-size: 1.5em;
+    font-size: 25px;
     animation: float 3s linear forwards;
     pointer-events: none;
   }
@@ -72,66 +41,95 @@
     0% { transform: translateY(0) scale(1); opacity: 1; }
     100% { transform: translateY(-200px) scale(1.5); opacity: 0; }
   }
+
+  /* Confetti style */
+  .confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #ff4d6d;
+    opacity: 0.8;
+    animation: confetti-fall 2s linear forwards;
+    pointer-events: none;
+  }
+
+  @keyframes confetti-fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(300px) rotate(360deg); opacity: 0; }
+  }
 </style>
 </head>
 <body>
-<div id="container">
-  <h1>Will you be my Valentine, Putu from Bali? 💌</h1>
-  <button id="yes" disabled>Yes ❤️</button>
-  <button id="no">No 😢</button>
-  <div id="message"></div>
-</div>
 
-<audio id="booSound" src="https://www.soundjay.com/human/boo-1.mp3"></audio>
+<div id="message">Selamat pagi, Putu 🌞💖</div>
+
+<audio id="popSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
+<audio id="giggleSound" src="https://www.soundjay.com/human/sounds/laugh-1.mp3"></audio>
 
 <script>
-const message = document.getElementById('message');
-const yesButton = document.getElementById('yes');
-const noButton = document.getElementById('no');
-const booSound = document.getElementById('booSound');
+const messages = [
+  "Selamat pagi, Putu 🌞💕",
+  "Aku sayang kamu 😘",
+  "You’re my favorite 💖",
+  "Hari ini akan indah, Putu! 🌸",
+  "Terima kasih sudah jadi kamu 💕",
+  "Putu, kamu lucu 😍"
+];
 
-// Floating hearts function
-function createHeart() {
+const messageEl = document.getElementById('message');
+const popSound = document.getElementById('popSound');
+const giggleSound = document.getElementById('giggleSound');
+
+let tapCount = 0;
+
+// Create a floating heart
+function createHeart(x, y) {
   const heart = document.createElement('div');
   heart.className = 'heart';
   heart.textContent = '💖';
-  heart.style.left = Math.random() * window.innerWidth + 'px';
-  heart.style.fontSize = (20 + Math.random() * 30) + 'px';
+  heart.style.left = (x - 15) + 'px';
+  heart.style.top = (y - 15) + 'px';
+  heart.style.fontSize = (25 + Math.random() * 30) + 'px';
   heart.style.animationDuration = (2 + Math.random() * 2) + 's';
   document.body.appendChild(heart);
   setTimeout(() => heart.remove(), 4000);
 }
 
-// Enable "Yes" after 5 seconds
-setTimeout(() => {
-  yesButton.disabled = false;
-  yesButton.textContent = 'Yes ❤️';
-}, 5000);
+// Create confetti
+function createConfetti() {
+  for (let i = 0; i < 20; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = Math.random() * window.innerWidth + 'px';
+    confetti.style.backgroundColor = ['#ff4d6d','#ffb6c1','#ffd700','#ff69b4','#ffa07a'][Math.floor(Math.random()*5)];
+    confetti.style.animationDuration = (1.5 + Math.random()*1.5) + 's';
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 2000);
+  }
+}
 
-// Move the "Yes" button randomly if hovered
-yesButton.addEventListener('mouseenter', () => {
-  if (yesButton.disabled) return;
-  const maxX = window.innerWidth - yesButton.offsetWidth;
-  const maxY = window.innerHeight - yesButton.offsetHeight;
-  const randomX = Math.random() * maxX;
-  const randomY = Math.random() * maxY;
-  yesButton.style.position = 'absolute';
-  yesButton.style.left = randomX + 'px';
-  yesButton.style.top = randomY + 'px';
+// Update message randomly
+function updateMessage() {
+  const msg = messages[Math.floor(Math.random() * messages.length)];
+  messageEl.textContent = msg;
+}
+
+// On touch / click
+document.body.addEventListener('touchstart', (e) => {
+  const touch = e.touches[0];
+  createHeart(touch.clientX, touch.clientY);
+  popSound.currentTime = 0;
+  popSound.play();
+  tapCount++;
+  
+  if (tapCount % 5 === 0) { // every 5 taps, do extra magic
+    createConfetti();
+    giggleSound.currentTime = 0;
+    giggleSound.play();
+    updateMessage();
+  }
 });
-
-// Clicking "Yes" shows message + hearts
-yesButton.onclick = () => {
-  message.textContent = "Yay! 💕 I’m so happy you said yes, Putu!";
-  for(let i=0; i<30; i++) setTimeout(createHeart, i*100);
-};
-
-// Clicking "No" plays boo sound + sad emojis
-noButton.onclick = () => {
-  booSound.play();
-  message.textContent = "Oh no 😢 Don't be sad, Putu!";
-  for(let i=0; i<5; i++) setTimeout(createHeart, i*200);
-};
 </script>
+
 </body>
 </html>
