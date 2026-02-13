@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine?</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #container {
+    text-align: center;
+    background: rgba(255,255,255,0.9);
+    padding: 2em;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  }
+
+  h1 {
+    font-size: 2em;
+    color: #ff4d6d;
+    margin-bottom: 1em;
+  }
+
+  button {
+    padding: 1em 2em;
+    margin: 0.5em;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+  }
+
+  #yes {
+    background-color: #ff4d6d;
+    color: white;
+  }
+
+  #no {
+    background-color: #ccc;
+  }
+
+  #message {
+    margin-top: 1em;
+    font-size: 1.5em;
+    color: #ff4d6d;
+  }
+
+  .heart {
+    position: absolute;
+    font-size: 1.5em;
+    animation: float 3s linear forwards;
+    pointer-events: none;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-200px) scale(1.5); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<div id="container">
+  <h1>Will you be my Valentine? 💌</h1>
+  <button id="yes">Yes ❤️</button>
+  <button id="no">No 😢</button>
+  <div id="message"></div>
+</div>
+
+<script>
+const message = document.getElementById('message');
+
+function createHeart() {
+  const heart = document.createElement('div');
+  heart.className = 'heart';
+  heart.textContent = '💖';
+  heart.style.left = Math.random() * window.innerWidth + 'px';
+  heart.style.fontSize = (20 + Math.random() * 30) + 'px';
+  heart.style.animationDuration = (2 + Math.random() * 2) + 's';
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 4000);
+}
+
+document.getElementById('yes').onclick = () => {
+  message.textContent = "Yay! 💕 I’m so happy you said yes!";
+  // Confetti hearts
+  for(let i=0; i<30; i++) setTimeout(createHeart, i*100);
+};
+
+document.getElementById('no').onclick = () => {
+  message.textContent = "Oh no 😢 Maybe try again?";
+};
+</script>
+</body>
+</html>
