@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine Adventure for Putu 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins&display=swap" rel="stylesheet">
 <style>
   body {
     margin: 0;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #ff9a9e, #fad0c4);
     display: flex;
     justify-content: center;
@@ -15,7 +16,6 @@
     height: 100vh;
     overflow: hidden;
     position: relative;
-    touch-action: manipulation;
   }
 
   #container {
@@ -28,7 +28,14 @@
   }
 
   h1 {
-    font-size: 1.8em;
+    font-family: 'Dancing Script', cursive;
+    font-size: 2em;
+    color: #ff4d6d;
+    margin-bottom: 1em;
+  }
+
+  p {
+    font-size: 1.3em;
     color: #ff4d6d;
     margin-bottom: 1em;
   }
@@ -40,8 +47,9 @@
     border: none;
     border-radius: 15px;
     cursor: pointer;
-    transition: transform 0.2s, top 0.2s, left 0.2s;
+    transition: transform 0.2s;
     position: relative;
+    min-width: 150px;
   }
 
   button:hover {
@@ -50,10 +58,8 @@
 
   #message {
     margin-top: 1em;
-    font-size: 1.3em;
+    font-size: 1.2em;
     color: #ff4d6d;
-    opacity: 1;
-    transition: opacity 0.5s;
   }
 
   .heart {
@@ -81,6 +87,30 @@
   @keyframes confetti-fall {
     0% { transform: translateY(0) rotate(0deg); opacity: 1; }
     100% { transform: translateY(300px) rotate(360deg); opacity: 0; }
+  }
+
+  /* Modal overlay for dialogs */
+  .modal-overlay {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.3);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index: 1000;
+  }
+
+  .modal-box {
+    background:white;
+    padding: 2em;
+    border-radius:20px;
+    font-size:1.5em;
+    color:#ff4d6d;
+    text-align:center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   }
 
 </style>
@@ -132,11 +162,26 @@ function createConfetti() {
   }
 }
 
+// Show modal dialog for a set time
+function showModal(text, duration = 5000, callback=null) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  const box = document.createElement('div');
+  box.className = 'modal-box';
+  box.textContent = text;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  setTimeout(() => {
+    document.body.removeChild(overlay);
+    if(callback) callback();
+  }, duration);
+}
+
 // Stage 1: Secret question
 function stage1() {
   container.innerHTML = '';
   messageEl.textContent = "First, do you want to know a secret?";
-
+  
   const yesBtn = document.createElement('button');
   yesBtn.textContent = "✅ Yes";
   yesBtn.onclick = stage2;
@@ -146,8 +191,7 @@ function stage1() {
   noBtn.onclick = () => {
     booSound.currentTime = 0;
     booSound.play();
-    messageEl.textContent = "Tough 😏 you have no choice!";
-    setTimeout(stage2, 1500);
+    messageEl.textContent = "Tough 😏 you have no choice! Click Yes 😉";
   };
 
   container.appendChild(yesBtn);
@@ -158,14 +202,17 @@ function stage1() {
 function stage2() {
   container.innerHTML = '';
   messageEl.textContent = "Did you know... if I could re-arrange the alphabet I’d put U and I together 😆 (eww)";
+  createConfetti();
   
-  const nextBtn = document.createElement('button');
-  nextBtn.textContent = "Next ➡️";
-  nextBtn.onclick = stage3;
-  container.appendChild(nextBtn);
+  setTimeout(() => {
+    const nextBtn = document.createElement('button');
+    nextBtn.textContent = "Next ➡️";
+    nextBtn.onclick = stage3;
+    container.appendChild(nextBtn);
+  }, 5000); // 5 second delay
 }
 
-// Stage 3: What do you love best about her
+// Stage 3: What do you love best
 function stage3() {
   container.innerHTML = '';
   messageEl.textContent = "What do you think I love best about you?";
@@ -175,14 +222,13 @@ function stage3() {
     const btn = document.createElement('button');
     btn.textContent = opt;
     btn.onclick = () => {
-      popSound.currentTime = 0;
-      popSound.play();
       createHeart(window.innerWidth/2, window.innerHeight/2);
-      messageEl.textContent = "All of them! 💕";
-      const nextBtn = document.createElement('button');
-      nextBtn.textContent = "Next ➡️";
-      nextBtn.onclick = stage4;
-      container.appendChild(nextBtn);
+      showModal("All of them! 💖", 5000, () => {
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = "Next ➡️";
+        nextBtn.onclick = stage4;
+        container.appendChild(nextBtn);
+      });
     };
     container.appendChild(btn);
   });
@@ -207,32 +253,35 @@ function stage4() {
     popSound.currentTime = 0;
     popSound.play();
     createHeart(window.innerWidth/2, window.innerHeight/2);
-    messageEl.textContent = "Yay! 💖";
+    stage5();
   };
 
   container.appendChild(chocolate);
   container.appendChild(flowers);
+}
+
+// Stage 5: Open gift
+function stage5() {
+  container.innerHTML = '';
+  messageEl.textContent = "Now, open the gift 🎁";
 
   const giftBtn = document.createElement('button');
   giftBtn.textContent = "Open Gift 🎁";
-  giftBtn.onclick = () => stage5(giftBtn);
+  giftBtn.onclick = () => {
+    giftBtn.disabled = true;
+    giftBtn.style.display = 'none';
+    showModal("Haha, not that easy! You’ll have to wait for your surprise!!! 💖", 5000, () => {
+      const clickHereBtn = document.createElement('button');
+      clickHereBtn.textContent = "Click here ➡️";
+      clickHereBtn.onclick = stage6;
+      container.appendChild(clickHereBtn);
+    });
+  };
+
   container.appendChild(giftBtn);
 }
 
-// Stage 5: Gift page
-function stage5(btn) {
-  btn.disabled = true;
-  btn.style.display = 'none';
-  createConfetti();
-  messageEl.textContent = "Haha, not that easy! You’ll have to wait for your surprise!!! 💖";
-
-  const clickHereBtn = document.createElement('button');
-  clickHereBtn.textContent = "Click here ➡️";
-  clickHereBtn.onclick = stage6;
-  container.appendChild(clickHereBtn);
-}
-
-// Stage 6: Final love message
+// Stage 6: Final message
 function stage6() {
   container.innerHTML = '';
   messageEl.textContent = "Happy Valentine’s Day baby 💖\nThis was just a bit of fun, wish I was there to spend the day with you. Can't wait to see you in a few weeks, pick you up and give you a big cuddle and kiss. Hope you have a good day, speak to you later. Love you, Kieran 💖";
@@ -240,14 +289,12 @@ function stage6() {
 
 // Start adventure
 document.getElementById('startBtn').onclick = () => {
-  popSound.currentTime = 0;
-  popSound.play();
   createHeart(window.innerWidth/2, window.innerHeight/2);
   messageEl.textContent = "Yay! Let’s start the adventure 💕";
-  setTimeout(stage1, 1000);
+  setTimeout(stage1, 500);
 };
 
-// Floating hearts on any tap
+// Tap anywhere creates hearts
 document.body.addEventListener('touchstart', (e) => {
   const touch = e.touches[0];
   createHeart(touch.clientX, touch.clientY);
