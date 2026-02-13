@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Untuk Putu 💖</title>
+<title>Valentine Treasure Hunt for Putu 💖</title>
 <style>
   body {
     margin: 0;
@@ -18,16 +18,40 @@
     touch-action: manipulation;
   }
 
-  #message {
-    position: fixed;
-    top: 10%;
-    width: 100%;
+  #container {
     text-align: center;
-    font-size: 1.5em;
+    background: rgba(255,255,255,0.95);
+    padding: 2em;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    max-width: 90%;
+  }
+
+  h1 {
+    font-size: 1.8em;
     color: #ff4d6d;
-    z-index: 1000;
-    text-shadow: 1px 1px 2px #fff;
-    pointer-events: none;
+    margin-bottom: 1em;
+  }
+
+  button {
+    padding: 1em 2em;
+    margin: 0.5em;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.2s, top 0.2s, left 0.2s;
+    position: relative;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+  }
+
+  #message {
+    margin-top: 1em;
+    font-size: 1.2em;
+    color: #ff4d6d;
   }
 
   .heart {
@@ -42,7 +66,6 @@
     100% { transform: translateY(-200px) scale(1.5); opacity: 0; }
   }
 
-  /* Confetti style */
   .confetti {
     position: absolute;
     width: 10px;
@@ -61,28 +84,26 @@
 </head>
 <body>
 
-<div id="message">Selamat pagi, Putu 🌞💖</div>
+<div id="container">
+  <h1>Selamat pagi, Putu! 💖</h1>
+  <div id="stageContent">
+    <button id="startBtn">Mulai Adventure 🎉</button>
+  </div>
+  <div id="message"></div>
+</div>
 
 <audio id="popSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
 <audio id="giggleSound" src="https://www.soundjay.com/human/sounds/laugh-1.mp3"></audio>
+<audio id="booSound" src="https://www.soundjay.com/human/boo-1.mp3"></audio>
 
 <script>
-const messages = [
-  "Selamat pagi, Putu 🌞💕",
-  "Aku sayang kamu 😘",
-  "You’re my favorite 💖",
-  "Hari ini akan indah, Putu! 🌸",
-  "Terima kasih sudah jadi kamu 💕",
-  "Putu, kamu lucu 😍"
-];
-
+const container = document.getElementById('stageContent');
 const messageEl = document.getElementById('message');
 const popSound = document.getElementById('popSound');
 const giggleSound = document.getElementById('giggleSound');
+const booSound = document.getElementById('booSound');
 
-let tapCount = 0;
-
-// Create a floating heart
+// Floating hearts
 function createHeart(x, y) {
   const heart = document.createElement('div');
   heart.className = 'heart';
@@ -95,7 +116,7 @@ function createHeart(x, y) {
   setTimeout(() => heart.remove(), 4000);
 }
 
-// Create confetti
+// Confetti
 function createConfetti() {
   for (let i = 0; i < 20; i++) {
     const confetti = document.createElement('div');
@@ -108,28 +129,77 @@ function createConfetti() {
   }
 }
 
-// Update message randomly
-function updateMessage() {
-  const msg = messages[Math.floor(Math.random() * messages.length)];
-  messageEl.textContent = msg;
+// Stage 1: Pick a heart
+function stage1() {
+  container.innerHTML = '';
+  const btn = document.createElement('button');
+  btn.textContent = 'Pilih Hati 💖';
+  btn.onclick = () => {
+    popSound.currentTime = 0;
+    popSound.play();
+    createHeart(window.innerWidth/2, window.innerHeight/2);
+    messageEl.textContent = "Kamu luar biasa, Putu! 😘";
+    setTimeout(stage2, 1500);
+  };
+  container.appendChild(btn);
 }
 
-// On touch / click
-document.body.addEventListener('touchstart', (e) => {
-  const touch = e.touches[0];
-  createHeart(touch.clientX, touch.clientY);
+// Stage 2: Chocolate or Flowers
+function stage2() {
+  container.innerHTML = '';
+  messageEl.textContent = "Pilih satu: Chocolate 🍫 atau Flowers 🌸?";
+  
+  const chocolate = document.createElement('button');
+  chocolate.textContent = "Chocolate 🍫";
+  chocolate.onclick = () => {
+    booSound.currentTime = 0;
+    booSound.play();
+    messageEl.textContent = "Ups 😅 coba lagi!";
+    // move button randomly
+    chocolate.style.position = 'absolute';
+    chocolate.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+    chocolate.style.top = Math.random() * (window.innerHeight - 200) + 'px';
+  };
+  
+  const flowers = document.createElement('button');
+  flowers.textContent = "Flowers 🌸";
+  flowers.onclick = () => {
+    popSound.currentTime = 0;
+    popSound.play();
+    createHeart(window.innerWidth/2, window.innerHeight/2);
+    messageEl.textContent = "Hebat! Kamu memilih dengan benar 💕";
+    setTimeout(stage3, 1500);
+  };
+  
+  container.appendChild(chocolate);
+  container.appendChild(flowers);
+}
+
+// Stage 3: Open gift
+function stage3() {
+  container.innerHTML = '';
+  messageEl.textContent = "Sekarang, buka hadiahnya 🎁";
+  
+  const giftBtn = document.createElement('button');
+  giftBtn.textContent = "Buka Hadiah 🎁";
+  giftBtn.onclick = () => {
+    popSound.currentTime = 0;
+    popSound.play();
+    createConfetti();
+    messageEl.textContent = "Putu, kamu Valentine-ku 💖 Aku sayang kamu 😘🌸";
+  };
+  
+  container.appendChild(giftBtn);
+}
+
+// Start button click
+document.getElementById('startBtn').onclick = () => {
   popSound.currentTime = 0;
   popSound.play();
-  tapCount++;
-  
-  if (tapCount % 5 === 0) { // every 5 taps, do extra magic
-    createConfetti();
-    giggleSound.currentTime = 0;
-    giggleSound.play();
-    updateMessage();
-  }
-});
+  createHeart(window.innerWidth/2, window.innerHeight/2);
+  messageEl.textContent = "Yay! Mari kita mulai adventure! 💕";
+  setTimeout(stage1, 1000);
+};
 </script>
-
 </body>
 </html>
