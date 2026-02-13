@@ -204,13 +204,21 @@ function stage2(){
 function stage3(){
   stageText.innerHTML="<p>What do you think I love best about you?</p>";
   stageButtons.innerHTML="";
-  const options=["Your smile","Your singing","You hogging the bed"];
+  
+  const options = ["Your smile","Your singing","You hogging the bed"];
+  
   options.forEach(opt=>{
     const btn=document.createElement('button');
     btn.textContent=opt;
     btn.onclick=()=>{
       createHeart(window.innerWidth/2,window.innerHeight/2);
+      
+      // Hide option buttons immediately
+      stageButtons.innerHTML = "";
+      
+      // Show modal dialog
       showModal("All of them! 💖",5000,()=>{
+        // After modal, show only the Next button
         const nextBtn=document.createElement('button');
         nextBtn.textContent="Next ➡️";
         nextBtn.onclick=stage4;
@@ -220,6 +228,7 @@ function stage3(){
     stageButtons.appendChild(btn);
   });
 }
+
 
 // Stage 4: Flowers/Chocolate
 function stage4(){
