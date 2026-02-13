@@ -31,13 +31,19 @@
     font-family: 'Dancing Script', cursive;
     font-size: 2em;
     color: #ff4d6d;
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
   }
 
-  p {
+  #stageText p {
     font-size: 1.3em;
     color: #ff4d6d;
     margin-bottom: 1em;
+  }
+
+  #stageButtons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   button {
@@ -48,19 +54,10 @@
     border-radius: 15px;
     cursor: pointer;
     transition: transform 0.2s;
-    position: relative;
     min-width: 150px;
   }
 
-  button:hover {
-    transform: scale(1.1);
-  }
-
-  #message {
-    margin-top: 1em;
-    font-size: 1.2em;
-    color: #ff4d6d;
-  }
+  button:hover { transform: scale(1.1); }
 
   .heart {
     position: absolute;
@@ -89,7 +86,6 @@
     100% { transform: translateY(300px) rotate(360deg); opacity: 0; }
   }
 
-  /* Modal overlay for dialogs */
   .modal-overlay {
     position: fixed;
     top:0;
@@ -119,10 +115,10 @@
 
 <div id="container">
   <h1>Good morning, baby! 🌞💖</h1>
-  <div id="stageContent">
+  <div id="stageText"><p>Click below to start your adventure 💕</p></div>
+  <div id="stageButtons">
     <button id="startBtn">Start the adventure 🚀</button>
   </div>
-  <div id="message"></div>
 </div>
 
 <audio id="popSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
@@ -130,174 +126,157 @@
 <audio id="booSound" src="https://www.soundjay.com/human/boo-1.mp3"></audio>
 
 <script>
-const container = document.getElementById('stageContent');
-const messageEl = document.getElementById('message');
+const stageText = document.getElementById('stageText');
+const stageButtons = document.getElementById('stageButtons');
 const popSound = document.getElementById('popSound');
 const giggleSound = document.getElementById('giggleSound');
 const booSound = document.getElementById('booSound');
 
-// Floating hearts
-function createHeart(x, y) {
-  const heart = document.createElement('div');
-  heart.className = 'heart';
-  heart.textContent = '💖';
-  heart.style.left = (x - 15) + 'px';
-  heart.style.top = (y - 15) + 'px';
-  heart.style.fontSize = (25 + Math.random() * 30) + 'px';
-  heart.style.animationDuration = (2 + Math.random() * 2) + 's';
+function createHeart(x,y){
+  const heart=document.createElement('div');
+  heart.className='heart';
+  heart.textContent='💖';
+  heart.style.left=(x-15)+'px';
+  heart.style.top=(y-15)+'px';
+  heart.style.fontSize=(25+Math.random()*30)+'px';
+  heart.style.animationDuration=(2+Math.random()*2)+'s';
   document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 4000);
+  setTimeout(()=>heart.remove(),4000);
 }
 
-// Confetti
-function createConfetti() {
-  for (let i = 0; i < 30; i++) {
-    const confetti = document.createElement('div');
-    confetti.className = 'confetti';
-    confetti.style.left = Math.random() * window.innerWidth + 'px';
-    confetti.style.backgroundColor = ['#ff4d6d','#ffb6c1','#ffd700','#ff69b4','#ffa07a'][Math.floor(Math.random()*5)];
-    confetti.style.animationDuration = (1.5 + Math.random()*1.5) + 's';
+function createConfetti(){
+  for(let i=0;i<30;i++){
+    const confetti=document.createElement('div');
+    confetti.className='confetti';
+    confetti.style.left=Math.random()*window.innerWidth+'px';
+    confetti.style.backgroundColor=['#ff4d6d','#ffb6c1','#ffd700','#ff69b4','#ffa07a'][Math.floor(Math.random()*5)];
+    confetti.style.animationDuration=(1.5+Math.random()*1.5)+'s';
     document.body.appendChild(confetti);
-    setTimeout(() => confetti.remove(), 2000);
+    setTimeout(()=>confetti.remove(),2000);
   }
 }
 
-// Show modal dialog for a set time
-function showModal(text, duration = 5000, callback=null) {
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay';
-  const box = document.createElement('div');
-  box.className = 'modal-box';
-  box.textContent = text;
+function showModal(text,duration=5000,callback=null){
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay';
+  const box=document.createElement('div');
+  box.className='modal-box';
+  box.textContent=text;
   overlay.appendChild(box);
   document.body.appendChild(overlay);
-  setTimeout(() => {
+  setTimeout(()=>{
     document.body.removeChild(overlay);
     if(callback) callback();
-  }, duration);
+  },duration);
 }
 
-// Stage 1: Secret question
-function stage1() {
-  container.innerHTML = '';
-  messageEl.textContent = "First, do you want to know a secret?";
-  
-  const yesBtn = document.createElement('button');
-  yesBtn.textContent = "✅ Yes";
-  yesBtn.onclick = stage2;
+// Stage 1: Secret
+function stage1(){
+  stageText.innerHTML="<p>First, do you want to know a secret?</p>";
+  stageButtons.innerHTML="";
 
-  const noBtn = document.createElement('button');
-  noBtn.textContent = "❌ No";
-  noBtn.onclick = () => {
-    booSound.currentTime = 0;
-    booSound.play();
-    messageEl.textContent = "Tough 😏 you have no choice! Click Yes 😉";
-  };
+  const yesBtn=document.createElement('button');
+  yesBtn.textContent="✅ Yes";
+  yesBtn.onclick=()=>{ popSound.currentTime=0; popSound.play(); stage2(); };
 
-  container.appendChild(yesBtn);
-  container.appendChild(noBtn);
+  const noBtn=document.createElement('button');
+  noBtn.textContent="❌ No";
+  noBtn.onclick=()=>{ booSound.currentTime=0; booSound.play(); stageText.innerHTML="<p>Tough 😏 you have no choice! Click Yes 😉</p>"; };
+
+  stageButtons.appendChild(yesBtn);
+  stageButtons.appendChild(noBtn);
 }
 
 // Stage 2: Cringe joke
-function stage2() {
-  container.innerHTML = '';
-  messageEl.textContent = "Did you know... if I could re-arrange the alphabet I’d put U and I together 😆 (eww)";
+function stage2(){
+  stageText.innerHTML="<p>Did you know... if I could re-arrange the alphabet I’d put U and I together 😆 (eww)</p>";
+  stageButtons.innerHTML="";
   createConfetti();
-  
-  setTimeout(() => {
-    const nextBtn = document.createElement('button');
-    nextBtn.textContent = "Next ➡️";
-    nextBtn.onclick = stage3;
-    container.appendChild(nextBtn);
-  }, 5000); // 5 second delay
+  setTimeout(()=>{
+    const nextBtn=document.createElement('button');
+    nextBtn.textContent="Next ➡️";
+    nextBtn.onclick=stage3;
+    stageButtons.appendChild(nextBtn);
+  },5000);
 }
 
-// Stage 3: What do you love best
-function stage3() {
-  container.innerHTML = '';
-  messageEl.textContent = "What do you think I love best about you?";
-
-  const options = ["Your smile", "Your singing", "You hogging the bed"];
-  options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.textContent = opt;
-    btn.onclick = () => {
-      createHeart(window.innerWidth/2, window.innerHeight/2);
-      showModal("All of them! 💖", 5000, () => {
-        const nextBtn = document.createElement('button');
-        nextBtn.textContent = "Next ➡️";
-        nextBtn.onclick = stage4;
-        container.appendChild(nextBtn);
+// Stage 3: Love quiz
+function stage3(){
+  stageText.innerHTML="<p>What do you think I love best about you?</p>";
+  stageButtons.innerHTML="";
+  const options=["Your smile","Your singing","You hogging the bed"];
+  options.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.textContent=opt;
+    btn.onclick=()=>{
+      createHeart(window.innerWidth/2,window.innerHeight/2);
+      showModal("All of them! 💖",5000,()=>{
+        const nextBtn=document.createElement('button');
+        nextBtn.textContent="Next ➡️";
+        nextBtn.onclick=stage4;
+        stageButtons.appendChild(nextBtn);
       });
     };
-    container.appendChild(btn);
+    stageButtons.appendChild(btn);
   });
 }
 
-// Stage 4: Flowers or Chocolate
-function stage4() {
-  container.innerHTML = '';
-  messageEl.textContent = "Final one: which would you choose?";
+// Stage 4: Flowers/Chocolate
+function stage4(){
+  stageText.innerHTML="<p>Final one: which would you choose?</p>";
+  stageButtons.innerHTML="";
+  const chocolate=document.createElement('button');
+  chocolate.textContent="Chocolate 🍫";
+  chocolate.onclick=()=>{ booSound.currentTime=0; booSound.play(); stageText.innerHTML="<p>Oops 😅</p>"; };
 
-  const chocolate = document.createElement('button');
-  chocolate.textContent = "Chocolate 🍫";
-  chocolate.onclick = () => {
-    booSound.currentTime = 0;
-    booSound.play();
-    messageEl.textContent = "Oops 😅";
-  };
-
-  const flowers = document.createElement('button');
-  flowers.textContent = "Flowers 🌸";
-  flowers.onclick = () => {
-    popSound.currentTime = 0;
-    popSound.play();
-    createHeart(window.innerWidth/2, window.innerHeight/2);
+  const flowers=document.createElement('button');
+  flowers.textContent="Flowers 🌸";
+  flowers.onclick=()=>{
+    popSound.currentTime=0; popSound.play();
+    createHeart(window.innerWidth/2,window.innerHeight/2);
     stage5();
   };
 
-  container.appendChild(chocolate);
-  container.appendChild(flowers);
+  stageButtons.appendChild(chocolate);
+  stageButtons.appendChild(flowers);
 }
 
 // Stage 5: Open gift
-function stage5() {
-  container.innerHTML = '';
-  messageEl.textContent = "Now, open the gift 🎁";
-
-  const giftBtn = document.createElement('button');
-  giftBtn.textContent = "Open Gift 🎁";
-  giftBtn.onclick = () => {
-    giftBtn.disabled = true;
-    giftBtn.style.display = 'none';
-    showModal("Haha, not that easy! You’ll have to wait for your surprise!!! 💖", 5000, () => {
-      const clickHereBtn = document.createElement('button');
-      clickHereBtn.textContent = "Click here ➡️";
-      clickHereBtn.onclick = stage6;
-      container.appendChild(clickHereBtn);
+function stage5(){
+  stageText.innerHTML="<p>Now, open the gift 🎁</p>";
+  stageButtons.innerHTML="";
+  const giftBtn=document.createElement('button');
+  giftBtn.textContent="Open Gift 🎁";
+  giftBtn.onclick=()=>{
+    giftBtn.disabled=true;
+    giftBtn.style.display='none';
+    showModal("Haha, not that easy! You’ll have to wait for your surprise!!! 💖",5000,()=>{
+      const clickHere=document.createElement('button');
+      clickHere.textContent="Click here ➡️";
+      clickHere.onclick=stage6;
+      stageButtons.appendChild(clickHere);
     });
   };
-
-  container.appendChild(giftBtn);
+  stageButtons.appendChild(giftBtn);
 }
 
 // Stage 6: Final message
-function stage6() {
-  container.innerHTML = '';
-  messageEl.textContent = "Happy Valentine’s Day baby 💖\nThis was just a bit of fun, wish I was there to spend the day with you. Can't wait to see you in a few weeks, pick you up and give you a big cuddle and kiss. Hope you have a good day, speak to you later. Love you, Kieran 💖";
+function stage6(){
+  stageText.innerHTML="<p>Happy Valentine’s Day baby 💖<br>This was just a bit of fun, wish I was there to spend the day with you. Can't wait to see you in a few weeks, pick you up and give you a big cuddle and kiss. Hope you have a good day, speak to you later. Love you, Kieran 💖</p>";
+  stageButtons.innerHTML="";
 }
 
 // Start adventure
-document.getElementById('startBtn').onclick = () => {
-  createHeart(window.innerWidth/2, window.innerHeight/2);
-  messageEl.textContent = "Yay! Let’s start the adventure 💕";
-  setTimeout(stage1, 500);
+document.getElementById('startBtn').onclick=()=>{
+  createHeart(window.innerWidth/2,window.innerHeight/2);
+  stageText.innerHTML="<p>Yay! Let’s start the adventure 💕</p>";
+  setTimeout(stage1,500);
 };
 
 // Tap anywhere creates hearts
-document.body.addEventListener('touchstart', (e) => {
-  const touch = e.touches[0];
-  createHeart(touch.clientX, touch.clientY);
+document.body.addEventListener('touchstart',e=>{
+  const touch=e.touches[0];
+  createHeart(touch.clientX,touch.clientY);
 });
 </script>
 </body>
